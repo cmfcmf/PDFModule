@@ -1,0 +1,19 @@
+{
+    "name": "cmfcmf/tcpdf-module",
+    "description": "Helper module for PDF and Barcode generation using the TCPDF library.",
+    "type": "zikula-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christian Flach",
+            "email": "cmfcmf.flach@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">5.3.3",
+        "tecnick.com/tcpdf": "~6.0"
+    },
+    "config": {
+        "vendor-dir": "lib/vendor"
+    }
+}
