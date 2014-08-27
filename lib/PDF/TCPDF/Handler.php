@@ -151,6 +151,8 @@ EOF
                 throw new \InvalidArgumentException('$format is invalid!');
         }
 
+        $filename = substr($filename, strlen(K_PATH_IMAGES));
+
         return '<img src="' . htmlspecialchars($filename) . '" alt="' . htmlspecialchars($code) . '" />';
     }
 
@@ -285,8 +287,8 @@ EOF
         $pdf->setFooterData($tc = array(0, 64, 0), $lc = array(0, 64, 128));
 
         // set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_HEADER, '', PDF_FONT_SIZE_HEADER));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_HEADER, '', PDF_FONT_SIZE_HEADER));
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

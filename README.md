@@ -21,8 +21,8 @@ If you add `&theme=pdf` to any link, the page will be downloaded as PDF file. **
 ### Barcode generation
 *In short:*
 
-- For 1D codes, add `{barcode1d code='yourCode'}` to your template.
-- For 2D codes, add `{barcode2d code='yourCode'}` to your template.
+- For 1D codes, add `{barcode1D code='yourCode'}` to your template.
+- For 2D codes, add `{barcode2D code='yourCode'}` to your template.
 
 *The long story:*
 
@@ -74,8 +74,8 @@ It is possible to generate 1D and 2D barcodes in templates. Both barcode functio
      * - PHARMA : PHARMACODE
      * - PHARMA2T : PHARMACODE TWO-TRACKS
 ##### Examples
-- `{barcode1d code="test"}` is the most basic usage and generates ![image](https://f.cloud.github.com/assets/2145092/376645/f8e146ea-a448-11e2-988b-f66020079cd8.png)
-- `{barcode1d code="123abc" color='green' width='3' height='50'}` generates ![image](https://f.cloud.github.com/assets/2145092/376646/216afed0-a449-11e2-8539-6e5ba5e191db.png)
+- `{barcode1D code="test"}` is the most basic usage and generates ![image](https://f.cloud.github.com/assets/2145092/376645/f8e146ea-a448-11e2-988b-f66020079cd8.png)
+- `{barcode1D code="123abc" color='green' width='3' height='50'}` generates ![image](https://camo.githubusercontent.com/c29532b1f6eb9256a1738ee229d4936470045d03/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f323134353039322f3337363634362f32313661666564302d613434392d313165322d383533392d3665356261356531393164622e706e67)
 
 #### 2D barcodes
 ##### Types
@@ -91,9 +91,9 @@ It is possible to generate 1D and 2D barcodes in templates. Both barcode functio
      * - RAW2: raw mode - array rows are surrounded by square parenthesis.
      * - TEST : Test matrix
 ##### Examples
-- `{barcode2d code="https://www.github.com/cmfcmf/PDFModule"}` is the most basic usage and generates
+- `{barcode2D code="https://www.github.com/cmfcmf/PDFModule"}` is the most basic usage and generates
 ![image](https://f.cloud.github.com/assets/2145092/376648/2a8eb6d2-a449-11e2-82c9-30c8ee250f44.png)
-- `{barcode2d code="https://www.github.com/cmfcmf/PDFModule" color='orange' type='DATAMATRIX'}` generates
+- `{barcode2D code="https://www.github.com/cmfcmf/PDFModule" color='orange' type='DATAMATRIX'}` generates
 ![image](https://f.cloud.github.com/assets/2145092/376649/39103c44-a449-11e2-9938-f680a59177e5.png)
 
 ## Usage for developers

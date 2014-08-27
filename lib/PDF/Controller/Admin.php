@@ -22,11 +22,28 @@ class PDF_Controller_Admin extends Zikula_AbstractController
     {
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('PDF::', '::', ACCESS_ADMIN));
 
-        $themes = ThemeUtil::getAllThemes(ThemeUtil::FILTER_ALL, ThemeUtil::STATE_ACTIVE);
-
         return $this->view
             ->assign('help', StringUtil::getMarkdownExtraParser()->transform(file_get_contents(__DIR__ . '/../../../README.md')))
-            ->assign('themeInstalled', array_key_exists('PDF', $themes))
+            ->assign('themeInstalled', $this->isPDFThemeInstalled())
             ->fetch('Admin/help.tpl');
+    }
+
+    /**
+     * Test some PDF functions.
+     */
+    public function test()
+    {
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('PDF::', '::', ACCESS_ADMIN));
+
+        return $this->view
+            ->assign('themeInstalled', $this->isPDFThemeInstalled())
+            ->fetch('Admin/test.tpl');
+    }
+
+    private function isPDFThemeInstalled()
+    {
+        $themes = ThemeUtil::getAllThemes(ThemeUtil::FILTER_ALL, ThemeUtil::STATE_ACTIVE);
+
+        return array_key_exists('PDF', $themes);
     }
 }

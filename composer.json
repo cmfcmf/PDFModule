@@ -11,9 +11,11 @@
     ],
     "require": {
         "php": ">5.3.3",
-        "tecnick.com/tcpdf": "~6.0"
+        "tecnick.com/tcpdf": "~6.0",
     },
     "config": {
-        "vendor-dir": "lib/vendor"
+        "vendor-dir": "lib/vendor",
+        "preferred-install": "dist",
+        "optimize-autoloader": true
     }
 }

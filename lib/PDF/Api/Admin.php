@@ -15,9 +15,11 @@ class PDF_Api_Admin extends Zikula_AbstractApi
             $links[] = array('url' => ModUtil::url('PDF', 'admin', 'help'),
                 'text' => $this->__('Help'),
                 'class' => 'z-icon-es-help');
+            $links[] = array('url' => ModUtil::url('PDF', 'admin', 'test'),
+                'text' => $this->__('Test'),
+                'class' => 'z-icon-es-info');
         }
 
         return $links;
     }
-
 }
