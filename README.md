@@ -102,29 +102,21 @@ It is possible to generate 1D and 2D barcodes in templates. Both barcode functio
 Add the two following lines of code. This will include the language files and the TCPDF config class:
 
 ```php
-$args = array (
-    'orientation' => 'L',
-);
-$tcpdf = ModUtil::apiFunc('PDF', 'PDF', 'getTCPDFHandler', $args);
+$tcpdfHandler = ModUtil::apiFunc('PDF', 'PDF', 'getTCPDFHandler');
 ```
 
-That will directly return an instance of the PDF_TCPDF_HANDLER class.
-
-@todo!!!
-
-`new TCPDF()` object. Below you see the arguments passed to the `createPdf()` method:
-
+That will directly return an instance of the PDF_TCPDF_HANDLER class. You can then call one of the following methods:
 ```php
-/**
- * @todo
- */
+/** @var $pdf TCPDF */
+$pdf = $tcpdfHandler->createPDF();
 ```
 
 For further documentation visit the [TCPDF documentation](http://www.tcpdf.org/doc/code/annotated.html).
 
 ### External configuration file
 
-If you'd like to use an external configuration file, simply call XYZ and pass the filepath as parameter.
+If you'd like to use an external configuration file, call the `setCustomConfigFile()` method of the `$tcpdfHandler`
+class with the path to your configuration file before calling `createPDF()`.
 
 *Example: If you'd like to change the `PDF_FONT_SIZE_MAIN` and `PDF_MARGIN_TOP`, your config file should look like this:*
 ```php
