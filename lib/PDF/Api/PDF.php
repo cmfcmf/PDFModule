@@ -37,4 +37,32 @@ class PDF_Api_PDF extends Zikula_AbstractApi
 
         return (string)$dom;
     }
+
+    /**
+     * Make all links in href attributes absolute.
+     *
+     * @param $args
+     *
+     * @throws InvalidArgumentException
+     * @return string
+     */
+    public function makeLinksAbsolute($args)
+    {
+        if (!isset($args['html'])) {
+            throw new \InvalidArgumentException('Missing $html argument.');
+        }
+
+        require_once __DIR__ . '/../../vendor/simple_html_dom.php';
+
+        $dom = str_get_html($args['html']);
+        foreach ($dom->find('a') as $node) {
+            $href = $node->href;
+            if (substr($href, 0, strlen('index.php')) === 'index.php') {
+                $href = System::getBaseUrl() . $href;
+                $node->href = $href;
+            }
+        }
+
+        return (string)$dom;
+    }
 }
