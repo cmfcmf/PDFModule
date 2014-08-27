@@ -6,7 +6,7 @@ This is a helper module for PDF and Barcode generation using the [TCPDF class fo
 ## Installation
 
 1. Install and download this module.
-2. Install and download the [corresponding theme](https://github.com/cmfcmf/PDFTheme).
+2. Install and download the [corresponding theme](https://github.com/cmfcmf/PDFTheme) if you want your users to be able to download every single page as PDF.
 
 ## Usage for normal users
 
