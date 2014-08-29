@@ -19,30 +19,19 @@ Add the `{pdfLink tag=true __text='Download as PDF'}` tag to your template. This
 If you add `&theme=pdf` to any link, the page will be downloaded as PDF file. **Requires the Theme to be installed.**
 
 ### Barcode generation
-*In short:*
 
-- For 1D codes, add `{barcode1D code='yourCode'}` to your template.
-- For 2D codes, add `{barcode2D code='yourCode'}` to your template.
-
-*The long story:*
-
-It is possible to generate 1D and 2D barcodes in templates. Both barcode functions have the same parameters:
+It is possible to generate 1D and 2D barcodes in templates using the `{barcode}` function. It has the following
+parameters:
 
 - code  (string)   The string to generate the barcode of.
-- type (string)    The type of the barcode.
+- dimension (int)  The barcode dimension, can be either 1 or 2.
+- type (string)    The type of the barcode. You can find all available types at the top of the PDF_TCPDF_Handler class.
+- color (string)   The color of the bars (HTML formatted).
 - width (integer)  The width of *one* bar / pixel.
 - height (integer) The height of *one* bar / pixel.
-- color (string)   The color of the barcode. You can use…
-     - …a html name here (blue, red, yellow, cornflowerblue, …).
-     - …an r-g-b array.
-- format (string)  The file format of the barcode.
-     - png:     The barcode is generated as png file and included with an `<img>` tag (caching enabled).
-     - svg:     The barcode is generated as svg file and included with an `<img>` tag (caching enabled).
-     - html:    The barcode is generated out of lots of `<div>` tags. **_This is not recommend!_**
-     - svgcode: The barcode is generated as svg code which can be directly used in html. **_This is not recommend!_**
 
-#### 1D barcodes
-##### Types
+#### 1D barcode types
+
      * - C39 : CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
      * - C39+ : CODE 39 with checksum
      * - C39E : CODE 39 EXTENDED
@@ -73,12 +62,9 @@ It is possible to generate 1D and 2D barcodes in templates. Both barcode functio
      * - CODE11 : CODE 11
      * - PHARMA : PHARMACODE
      * - PHARMA2T : PHARMACODE TWO-TRACKS
-##### Examples
-- `{barcode1D code="test"}` is the most basic usage and generates ![image](https://f.cloud.github.com/assets/2145092/376645/f8e146ea-a448-11e2-988b-f66020079cd8.png)
-- `{barcode1D code="123abc" color='green' width='3' height='50'}` generates ![image](https://camo.githubusercontent.com/c29532b1f6eb9256a1738ee229d4936470045d03/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f323134353039322f3337363634362f32313661666564302d613434392d313165322d383533392d3665356261356531393164622e706e67)
 
-#### 2D barcodes
-##### Types
+#### 2D barcode types
+
      * - DATAMATRIX : Datamatrix (ISO/IEC 16022)
      * - PDF417 : PDF417 (ISO/IEC 15438:2006)
      * - PDF417,a,e,t,s,f,o0,o1,o2,o3,o4,o5,o6 : PDF417 with parameters: a = aspect ratio (width/height); e = error correction level (0-8); t = total number of macro segments; s = macro segment index (0-99998); f = file ID; o0 = File Name (text); o1 = Segment Count (numeric); o2 = Time Stamp (numeric); o3 = Sender (text); o4 = Addressee (text); o5 = File Size (numeric); o6 = Checksum (numeric). NOTES: Parameters t, s and f are required for a Macro Control Block, all other parametrs are optional. To use a comma character ',' on text options, replace it with the character 255: "\xff".
@@ -90,10 +76,14 @@ It is possible to generate 1D and 2D barcodes in templates. Both barcode functio
      * - RAW: raw mode - comma-separad list of array rows
      * - RAW2: raw mode - array rows are surrounded by square parenthesis.
      * - TEST : Test matrix
+
 ##### Examples
-- `{barcode2D code="https://www.github.com/cmfcmf/PDFModule"}` is the most basic usage and generates
+
+- `{barcode code="test"}` is the most basic usage and generates ![image](https://f.cloud.github.com/assets/2145092/376645/f8e146ea-a448-11e2-988b-f66020079cd8.png)
+- `{barcode code="123abc" color='green' width='3' height='50'}` generates ![image](https://camo.githubusercontent.com/c29532b1f6eb9256a1738ee229d4936470045d03/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f323134353039322f3337363634362f32313661666564302d613434392d313165322d383533392d3665356261356531393164622e706e67)
+- `{barcode code="https://www.github.com/cmfcmf/PDFModule" dimension=2 type='QRCODE,H'}` is the most basic usage and generates
 ![image](https://f.cloud.github.com/assets/2145092/376648/2a8eb6d2-a449-11e2-82c9-30c8ee250f44.png)
-- `{barcode2D code="https://www.github.com/cmfcmf/PDFModule" color='orange' type='DATAMATRIX'}` generates
+- `{barcode code="https://www.github.com/cmfcmf/PDFModule" color='orange' dimension=2 type='DATAMATRIX'}` generates
 ![image](https://f.cloud.github.com/assets/2145092/376649/39103c44-a449-11e2-9938-f680a59177e5.png)
 
 ## Usage for developers

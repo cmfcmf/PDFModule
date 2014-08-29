@@ -2,6 +2,57 @@
 
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
+/**
+ * Available 1D barcode types:
+ * - C39 : CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
+ * - C39+ : CODE 39 with checksum
+ * - C39E : CODE 39 EXTENDED
+ * - C39E+ : CODE 39 EXTENDED + CHECKSUM
+ * - C93 : CODE 93 - USS-93
+ * - S25 : Standard 2 of 5
+ * - S25+ : Standard 2 of 5 + CHECKSUM
+ * - I25 : Interleaved 2 of 5
+ * - I25+ : Interleaved 2 of 5 + CHECKSUM
+ * - C128 : CODE 128
+ * - C128A : CODE 128 A
+ * - C128B : CODE 128 B
+ * - C128C : CODE 128 C
+ * - EAN2 : 2-Digits UPC-Based Extention
+ * - EAN5 : 5-Digits UPC-Based Extention
+ * - EAN8 : EAN 8
+ * - EAN13 : EAN 13
+ * - UPCA : UPC-A
+ * - UPCE : UPC-E
+ * - MSI : MSI (Variation of Plessey code)
+ * - MSI+ : MSI + CHECKSUM (modulo 11)
+ * - POSTNET : POSTNET
+ * - PLANET : PLANET
+ * - RMS4CC : RMS4CC (Royal Mail 4-state Customer Code) - CBC (Customer Bar Code)
+ * - KIX : KIX (Klant index - Customer index)
+ * - IMB: Intelligent Mail Barcode - Onecode - USPS-B-3200
+ * - CODABAR : CODABAR
+ * - CODE11 : CODE 11
+ * - PHARMA : PHARMACODE
+ * - PHARMA2T : PHARMACODE TWO-TRACKS
+ *
+ * Available 2D barcode types:
+ * - DATAMATRIX : Datamatrix (ISO/IEC 16022)
+ * - PDF417 : PDF417 (ISO/IEC 15438:2006)
+ * - PDF417,a,e,t,s,f,o0,o1,o2,o3,o4,o5,o6 : PDF417 with parameters: a = aspect ratio (width/height); e = error correction level (0-8); t = total number of macro segments; s = macro segment index (0-99998); f = file ID; o0 = File Name (text); o1 = Segment Count (numeric); o2 = Time Stamp (numeric); o3 = Sender (text); o4 = Addressee (text); o5 = File Size (numeric); o6 = Checksum (numeric). NOTES: Parameters t, s and f are required for a Macro Control Block, all other parametrs are optional. To use a comma character ',' on text options, replace it with the character 255: "\xff".
+ * - QRCODE : QRcode Low error correction
+ * - QRCODE,L : QRcode Low error correction
+ * - QRCODE,M : QRcode Medium error correction
+ * - QRCODE,Q : QRcode Better error correction
+ * - QRCODE,H : QR-CODE Best error correction
+ * - RAW: raw mode - comma-separad list of array rows
+ * - RAW2: raw mode - array rows are surrounded by square parenthesis.
+ * - TEST : Test matrix
+ *
+ * Available formats:
+ * - html
+ * - png
+ * - svg
+ */
 class PDF_TCPDF_Handler
 {
     private $pathToBarcodeCache;
@@ -12,19 +63,29 @@ class PDF_TCPDF_Handler
 
     private $customConfigFile;
 
+    const BARCODE_DEFAULT_WIDTH = 2;
+
+    const BARCODE_DEFAULT_HEIGHT = 30;
+
+    const QRCODE_DEFAULT_WIDTH = 6;
+
+    const QRCODE_DEFAULT_HEIGHT = 6;
+
+    const CACHE_DIR = 'PDFModule/barcodes';
+
     /**
      * DO NOT USE THIS METHOD! Always use the PDF api function to instanciate this class.
      */
     public function __construct()
     {
-        $this->pathToBarcodeCache = CacheUtil::getLocalDir('PDFModule/barcodes');
+        $this->pathToBarcodeCache = CacheUtil::getLocalDir(self::CACHE_DIR);
         $this->tcpdfBaseDir = __DIR__ . '/../../vendor/tecnick.com/tcpdf';
 
         if(!is_readable($this->pathToBarcodeCache)) {
-            CacheUtil::createLocalDir('PDFModule/barcodes');
+            CacheUtil::createLocalDir(self::CACHE_DIR);
             file_put_contents("{$this->pathToBarcodeCache}/.htaccess", <<< EOF
 deny from all
-<FilesMatch "\.(png)$">
+<FilesMatch "\.(png|svg)$">
 order allow,deny
 allow from all
 </filesmatch>
@@ -73,151 +134,99 @@ EOF
         return $pdf;
     }
 
+
     /**
-     * @param        $code   The code to generate the barcode of.
-     * @param string $type   The type of the barcode, for available types see below.
-     * @param int    $width  The width of *one* bar.
-     * @param int    $height The height of *oen* bar.
-     * @param string $color  The color of the bars.
-     * @param string $format The file format of the barcode, for available types see below.
-     * @param bool   $force  Force regeneration of barcode.
+     * Get the file path of the barcode relative to the Zikula root.
+     *
+     * @param string $code      The code to generate the barcode of.
+     * @param int    $dimension The dimension, either 1 for 1D or 2 for 2D.
+     * @param string $type      The type of the barcode, for available types see the class-level doc-block.
+     * @param string $format    The file format of the barcode, for available types see the class-level doc-block.
+     * @param string $color     The color of the bars.
+     * @param int    $width     The width of *one* bar.
+     * @param int    $height    The height of *oen* bar.
      *
      * @throws InvalidArgumentException
-     * @return string The barcode as html.
-     *
-     * @note It is not possible to return the barcode in other formats than html (like png / svg), because TCPDF returns them directly in the browser which destroys your page.
-     *
-     * Possible types:
-     * - C39 : CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
-     * - C39+ : CODE 39 with checksum
-     * - C39E : CODE 39 EXTENDED
-     * - C39E+ : CODE 39 EXTENDED + CHECKSUM
-     * - C93 : CODE 93 - USS-93
-     * - S25 : Standard 2 of 5
-     * - S25+ : Standard 2 of 5 + CHECKSUM
-     * - I25 : Interleaved 2 of 5
-     * - I25+ : Interleaved 2 of 5 + CHECKSUM
-     * - C128 : CODE 128
-     * - C128A : CODE 128 A
-     * - C128B : CODE 128 B
-     * - C128C : CODE 128 C
-     * - EAN2 : 2-Digits UPC-Based Extention
-     * - EAN5 : 5-Digits UPC-Based Extention
-     * - EAN8 : EAN 8
-     * - EAN13 : EAN 13
-     * - UPCA : UPC-A
-     * - UPCE : UPC-E
-     * - MSI : MSI (Variation of Plessey code)
-     * - MSI+ : MSI + CHECKSUM (modulo 11)
-     * - POSTNET : POSTNET
-     * - PLANET : PLANET
-     * - RMS4CC : RMS4CC (Royal Mail 4-state Customer Code) - CBC (Customer Bar Code)
-     * - KIX : KIX (Klant index - Customer index)
-     * - IMB: Intelligent Mail Barcode - Onecode - USPS-B-3200
-     * - CODABAR : CODABAR
-     * - CODE11 : CODE 11
-     * - PHARMA : PHARMACODE
-     * - PHARMA2T : PHARMACODE TWO-TRACKS
-     *
-     * Possible file formats:
-     * - html:    The barcode is generated out of lots of <div> tags.
-     * - png:     The barcode is generated as png file and included with an <img> tag (caching enabled).
-     * - svg:     The barcode is generated as svg file and included with an <img> tag (caching enabled).
-     * - svgcode: The barcode is generated as svg code which can be directly used in html.
+     * @return string The file path of the barcode.
      */
-    public function createBarcode1D($code, $type = 'C128', $width = 2, $height = 30, $color = 'black', $format = 'png')
+    public function getPathToBarcode($code, $dimension, $type, $format = 'png', $color = 'black', $width = self::BARCODE_DEFAULT_WIDTH, $height = self::BARCODE_DEFAULT_HEIGHT)
     {
-        $this->includeConfigFile();
-        $color = $this->convertColorForFormat($color, $format);
-
-        $barcode = new TCPDFBarcode($code, $type);
-
-        switch($format) {
-            case 'html':
-                return $barcode->getBarcodeHTML($width, $height, $color);
-            case 'svgcode':
-                return $barcode->getBarcodeSVGcode($width, $height, $color);
-            case 'png':
-                TCPDF_STATIC::getObjFilename();
-                $filename = tempnam($this->pathToBarcodeCache, '1D') . ".png";
-                file_put_contents($filename, $barcode->getBarcodePngData($width, $height, $color));
-                break;
-            case 'svg':
-                TCPDF_STATIC::getObjFilename();
-                $filename = tempnam($this->pathToBarcodeCache, '1D') . ".svg";
-                file_put_contents($filename, $barcode->getBarcodeSVGcode($width, $height, $color));
-                break;
-            default:
-                throw new \InvalidArgumentException('$format is invalid!');
+        if (!in_array($format, array('png', 'svg'))) {
+            throw new \InvalidArgumentException('$format must be either "png" or "svg".');
         }
+        $typeForPath = preg_replace('/[^a-zA-Z0-9_-]/', '_', $type);
+        list ($r, $g, $b) = $this->convertColor($color, 'png');
+        $path = self::CACHE_DIR . "/$dimension/{$typeForPath}/{$width}_{$height}_{$r}_{$g}_{$b}";
+        $file = CacheUtil::getLocalDir($path) . "/" . md5($code) . ".$format";
+        if (file_exists($file)) {
+            return $file;
+        }
+        $data = $this->getBarcodeData($code, $dimension, $type, $format, $color, $width, $height);
 
-        $filename = substr($filename, strlen(K_PATH_IMAGES));
+        CacheUtil::createLocalDir($path);
+        file_put_contents($file, $data);
 
-        return '<img src="' . htmlspecialchars($filename) . '" alt="' . htmlspecialchars($code) . '" />';
+        return $file;
     }
 
     /**
-     * @param        $code   The code to generate the barcode of.
-     * @param string $type   The type of the barcode, for available types see below.
-     * @param int    $width  The width of a pixel / dot.
-     * @param int    $height The height of a pixel / dot.
-     * @param string $color  The color of the pixels / dots.
-     * @param string $format The file format of the barcode, for available types see below.
-     * @param bool   $force  Foce regeneration of barcode.
+     * Get the url of the barcode.
+     *
+     * @param string $code      The code to generate the barcode of.
+     * @param int    $dimension The dimension, either 1 for 1D or 2 for 2D.
+     * @param string $type      The type of the barcode, for available types see the class-level doc-block.
+     * @param string $format    The file format of the barcode, for available types see the class-level doc-block.
+     * @param string $color     The color of the bars.
+     * @param int    $width     The width of *one* bar.
+     * @param int    $height    The height of *oen* bar.
      *
      * @throws InvalidArgumentException
-     * @return string The barcode as html.
-     *
-     * Possible types:
-     * - DATAMATRIX : Datamatrix (ISO/IEC 16022)
-     * - PDF417 : PDF417 (ISO/IEC 15438:2006)
-     * - PDF417,a,e,t,s,f,o0,o1,o2,o3,o4,o5,o6 : PDF417 with parameters: a = aspect ratio (width/height); e = error correction level (0-8); t = total number of macro segments; s = macro segment index (0-99998); f = file ID; o0 = File Name (text); o1 = Segment Count (numeric); o2 = Time Stamp (numeric); o3 = Sender (text); o4 = Addressee (text); o5 = File Size (numeric); o6 = Checksum (numeric). NOTES: Parameters t, s and f are required for a Macro Control Block, all other parametrs are optional. To use a comma character ',' on text options, replace it with the character 255: "\xff".
-     * - QRCODE : QRcode Low error correction
-     * - QRCODE,L : QRcode Low error correction
-     * - QRCODE,M : QRcode Medium error correction
-     * - QRCODE,Q : QRcode Better error correction
-     * - QRCODE,H : QR-CODE Best error correction
-     * - RAW: raw mode - comma-separad list of array rows
-     * - RAW2: raw mode - array rows are surrounded by square parenthesis.
-     * - TEST : Test matrix
-     *
-     * Possible file formats:
-     * - html:    The barcode is generated out of lots of <div> tags.
-     * - png:     The barcode is generated as png file and included with an <img> tag (caching enabled).
-     * - svg:     The barcode is generated as svg file and included with an <img> tag (caching enabled).
-     * - svgcode: The barcode is generated as svg code which can be directly used in html.
+     * @return string The url of the barcode.
      */
-    public function createBarcode2D($code, $type = 'QRCODE,H', $width = 6, $height = 6, $color = 'black', $format = 'png')
+    public function getUrlToBarcode($code, $dimension, $type, $format = 'png', $color = 'black', $width = self::BARCODE_DEFAULT_WIDTH, $height = self::BARCODE_DEFAULT_HEIGHT)
+    {
+        $path = $this->getPathToBarcode($code, $dimension, $type, $format, $color, $width, $height);
+
+        return System::getBaseUrl() . $path;
+    }
+
+    /**
+     * Get the raw data of a barcode.
+     *
+     * @param string $code      The code to generate the barcode of.
+     * @param int    $dimension The dimension, either 1 for 1D or 2 for 2D.
+     * @param string $type      The type of the barcode, for available types see the class-level doc-block.
+     * @param string $format    The file format of the barcode, for available types see the class-level doc-block.
+     * @param string $color     The color of the bars.
+     * @param int    $width     The width of *one* bar.
+     * @param int    $height    The height of *oen* bar.
+     *
+     * @throws InvalidArgumentException
+     * @return string The raw data of a barcode.
+     */
+    public function getBarcodeData($code, $dimension, $type, $format = 'png', $color = 'black', $width = self::BARCODE_DEFAULT_WIDTH, $height = self::BARCODE_DEFAULT_HEIGHT)
     {
         $this->includeConfigFile();
-        $color = $this->convertColorForFormat($color, $format);
+        $color = $this->convertColor($color, $format);
 
-        $barcode = new TCPDF2DBarcode($code, $type);
+        if ($dimension == 1) {
+            $barcode = new TCPDFBarcode($code, $type);
+        } else if ($dimension == 2) {
+            $barcode = new TCPDF2DBarcode($code, $type);
+        } else {
+            throw new \InvalidArgumentException('$dimension must be either 1 or 2.');
+        }
 
         switch($format) {
             case 'html':
                 return $barcode->getBarcodeHTML($width, $height, $color);
-            case 'png':
-                #$filename = $this->pathToBarcodeCache . '/' . md5('2D' . $code . $type . $width . $height . implode('', $color) . $format) . '.png';
-                TCPDF_STATIC::getObjFilename();
-                $filename = tempnam($this->pathToBarcodeCache, '2D') . ".png";
-                file_put_contents($filename, $barcode->getBarcodePngData($width, $height, $color));
-                break;
             case 'svg':
-                #$filename = $this->pathToBarcodeCache . '/' . md5('2D' . $code . $type . $width . $height . $color . $format) . '.svg';
-                TCPDF_STATIC::getObjFilename();
-                $filename = tempnam($this->pathToBarcodeCache, '2D') . ".png";
-                file_put_contents($filename, $barcode->getBarcodeSVGcode($width, $height, $color, $filename));
-                break;
-            case 'svgcode':
                 return $barcode->getBarcodeSVGcode($width, $height, $color);
+            case 'png':
+                return $barcode->getBarcodePngData($width, $height, $color);
             default:
                 throw new \InvalidArgumentException('$format is invalid!');
         }
-
-        $filename = substr($filename, strlen(K_PATH_IMAGES));
-
-        return '<img src="' . htmlspecialchars($filename) . '" alt="' . htmlspecialchars($code) . '" />';
     }
 
     /**
@@ -315,26 +324,18 @@ EOF
         $pdf->SetFont(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN);
     }
 
-    private function convertColorForFormat($color, $format)
+    private function convertColor($color, $format)
     {
-        if ($format == 'png' && is_string($color)) {
-            return $this->str2rgb($color);
-        } else if ($format != 'png' && is_array($color)) {
-            return TCPDF_COLORS::getColorStringFromArray($color);
+        if ($format != 'png') {
+            return $color;
         }
-        return $color;
-    }
 
-    /**
-     * Converts a hexadecimal html color to an rgb array.
-     * @param $hex (string) The color string, example: #383ffd.
-     *
-     * @return array The rgb color array.
-     */
-    private function str2rgb($str)
-    {
-        $colorArray = TCPDF_COLORS::$webcolor;
-        $hex = $colorArray[$str];
+        if (preg_match('/^#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?$/', $color) === 0) {
+            $colorArray = TCPDF_COLORS::$webcolor;
+            $hex = $colorArray[$color];
+        } else {
+            $hex = $color;
+        }
 
         $hex = str_replace("#", "", $hex);
 
