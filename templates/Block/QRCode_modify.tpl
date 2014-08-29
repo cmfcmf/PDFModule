@@ -1,6 +1,7 @@
 <div class="z-formrow">
     <label for="PDF_QRCode_code">{gt text='Code'}:</label>
     <input type="text" id="PDF_QRCode_code" name="code" maxlength="9999" value="{$code|safetext}" />
+    <em class="z-sub z-formnote">{gt text='In it\'s simplest form, just insert an url here. But there are many other possibilities: %s. There also is an open issue to improve your user experience: %s' tag1='<a href="https://github.com/zxing/zxing/wiki/Barcode-Contents">https://github.com/zxing/zxing/wiki/Barcode-Contents</a>' tag2='<a href="https://github.com/cmfcmf/PDFModule/issues/2">https://github.com/cmfcmf/PDFModule/issues/2</a>'}</em>
 </div>
 <div class="z-formrow">
     <label for="PDF_QRCode_dimension">{gt text='1D / 2D'}:</label>

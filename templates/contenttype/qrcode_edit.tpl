@@ -2,6 +2,7 @@
 <div class="z-formrow">
     {formlabel for='code' __text='Code' mandatorysym=true}
     {formtextinput id='code' maxLength='9999' group='data' mandatory=true}
+    <em class="z-sub z-formnote">{gt text='In it\'s simplest form, just insert an url here. But there are many other possibilities: %s. There also is an open issue to improve your user experience: %s' tag1='<a href="https://github.com/zxing/zxing/wiki/Barcode-Contents">https://github.com/zxing/zxing/wiki/Barcode-Contents</a>' tag2='<a href="https://github.com/cmfcmf/PDFModule/issues/2">https://github.com/cmfcmf/PDFModule/issues/2</a>'}</em>
 </div>
 <div class="z-formrow">
     {formlabel for='dimension' __text='1D / 2D' mandatorysym=true}
