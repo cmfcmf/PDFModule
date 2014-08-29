@@ -1,7 +1,7 @@
 PDFModule
 ===========
 
-This is a helper module for PDF and Barcode generation using the [TCPDF class for generating PDF documents and barcodes](http://www.tcpdf.org/).
+This is a helper module for PDF, QRCode and Barcode generation using the [TCPDF class for generating PDF documents and barcodes](http://www.tcpdf.org/).
 
 ## Installation
 
@@ -10,18 +10,12 @@ This is a helper module for PDF and Barcode generation using the [TCPDF class fo
 
 ## Usage for normal users
 
-### PDF generation
+### Bar- and QRCodes
 
-#### Link in templates to download this page as PDF
-Add the `{pdfLink tag=true __text='Download as PDF'}` tag to your template. This will generate a link for downloading the current page as PDF file.
+This module provides a Content-Plugin as well as a Block to display a single Bar- / QRCode.
 
-#### Direct link to download a page as PDF
-If you add `&theme=pdf` to any link, the page will be downloaded as PDF file. **Requires the Theme to be installed.**
-
-### Barcode generation
-
-It is possible to generate 1D and 2D barcodes in templates using the `{barcode}` function. It has the following
-parameters:
+It is also possible (but not recommend) to generate 1D and 2D barcodes directly in templates using the `{barcode}`
+function. It has the following parameters:
 
 - code  (string)   The string to generate the barcode of.
 - dimension (int)  The barcode dimension, can be either 1 or 2.
@@ -29,6 +23,8 @@ parameters:
 - color (string)   The color of the bars (HTML formatted).
 - width (integer)  The width of *one* bar / pixel.
 - height (integer) The height of *one* bar / pixel.
+
+Below is a list of the supported Bar- and QRCodes:
 
 #### 1D barcode types
 
@@ -85,6 +81,14 @@ parameters:
 ![image](https://f.cloud.github.com/assets/2145092/376648/2a8eb6d2-a449-11e2-82c9-30c8ee250f44.png)
 - `{barcode code="https://www.github.com/cmfcmf/PDFModule" color='orange' dimension=2 type='DATAMATRIX'}` generates
 ![image](https://f.cloud.github.com/assets/2145092/376649/39103c44-a449-11e2-9938-f680a59177e5.png)
+
+### PDF generation (requires PDFTheme!)
+
+#### Link in templates to download this page as PDF
+Add the `{pdfLink tag=true __text='Download as PDF'}` tag to your template. This will generate a link for downloading the current page as PDF file.
+
+#### Direct link to download a page as PDF
+If you add `&theme=pdf` to any link, the page will be downloaded as PDF file.
 
 ## Usage for developers
 
