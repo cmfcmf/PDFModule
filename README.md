@@ -133,3 +133,6 @@ Pull requests and issue-reportings are most welcome!
 MIT, see the *LICENSE.md* file.
 
 **Important:** This project contains the TCPDF project which is licensed under GNU/LGPLv3. You find the files under `lib/vendor/tcpdf`.
+
+**Important:** The admin icon is part of the [Free-File-Icons](https://github.com/teambox/Free-file-icons),
+*Copyright (C) 2009. Teambox Technologies, S.L.* and licensed under MIT license.
