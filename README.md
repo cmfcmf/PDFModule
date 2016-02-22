@@ -109,8 +109,8 @@ For further documentation visit the [TCPDF documentation](http://www.tcpdf.org/d
 
 ### External configuration file
 
-If you'd like to use an external configuration file, call the `setCustomConfigFile()` method of the `$tcpdfHandler`
-class with the path to your configuration file before calling `createPDF()`.
+If you'd like to use an external configuration file, either call the `setCustomConfigFile()` method of the `$tcpdfHandler`
+class with the path to your configuration file before calling `createPDF()` or place your config file at `config/tcpdf_config.php`.
 
 *Example: If you'd like to change the `PDF_FONT_SIZE_MAIN` and `PDF_MARGIN_TOP`, your config file should look like this:*
 ```php
