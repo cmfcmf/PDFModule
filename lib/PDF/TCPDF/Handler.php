@@ -269,6 +269,9 @@ EOF
     {
         // Include custom config file.
         require_once __DIR__ . "/../../PDF/TCPDF/tcpdf_custom_config.php";
+        if (is_readable("config/tcpdf_config.php")) {
+            require_once "config/tcpdf_config.php";
+        }
         if (!empty($this->customConfigFile)) {
             // Include custom third party config file.
             require_once $this->customConfigFile;
